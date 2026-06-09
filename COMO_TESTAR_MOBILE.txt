@@ -1,0 +1,80 @@
+════════════════════════════════════════════════════════════════
+  📱 COMO TESTAR NO MOBILE — SOLLUN
+════════════════════════════════════════════════════════════════
+
+PASSO 1: Abra um terminal na pasta Pagina/
+═══════════════════════════════════════════════════════════════════
+
+  cd "c:\Users\trind\OneDrive\Documentos\SollunProject\Pagina"
+
+
+PASSO 2: Inicie o servidor
+═══════════════════════════════════════════════════════════════════
+
+  npm run dev
+
+Você verá:
+  ✓ VITE v5.4.21 ready in XXms
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://172.28.32.1:5173/
+
+
+PASSO 3: No seu MOBILE (mesma rede Wi-Fi)
+═══════════════════════════════════════════════════════════════════
+
+  Abra o navegador e acesse:
+
+    http://172.28.32.1:5173
+
+  OU escaneie o QR Code em:
+
+    Pagina/qr-mobile.html
+
+
+OPÇÕES DE ACESSO:
+═══════════════════════════════════════════════════════════════════
+
+  ✅ http://172.28.32.1:5173/         → Landing page
+  ✅ http://172.28.32.1:5173/demo.html → Demo interativa
+  ✅ http://172.28.32.1:5173/ajuda.html → Central de ajuda
+
+
+PRECISA COMPARTILHAR?
+═══════════════════════════════════════════════════════════════════
+
+  Opção A: Envie o arquivo ZIP
+  └─ Pagina/sollun-build.zip (~28 KB)
+     (Build production — abra index.html offline)
+
+  Opção B: Compartilhe o link
+  └─ Envie: http://172.28.32.1:5173
+     (Precisa que seu PC tenha servidor rodando)
+
+  Opção C: Use ngrok para link público
+  └─ npx ngrok http 5173
+     (Gera link acessível de qualquer lugar)
+
+
+TROUBLESHOOTING:
+═══════════════════════════════════════════════════════════════════
+
+  ❌ Não consigo conectar:
+     → Verifique se PC e mobile estão na mesma Wi-Fi
+     → Tente http://localhost:5173 se estiver no mesmo PC
+     → Verifique firewall do Windows
+
+  ❌ Página não carrega:
+     → Ctrl+Shift+R no mobile (hard refresh)
+     → Limpe cache do navegador
+     → Feche abas extras
+
+  ❌ Buttons/Chat não funcionam:
+     → Abra F12 (Developer Tools)
+     → Verifique aba "Console" para erros
+     → Tente em outro navegador (Chrome/Safari/Firefox)
+
+════════════════════════════════════════════════════════════════
+
+IP Local da sua máquina: 172.28.32.1
+Data: 2026-06-09
+Status: ✅ Pronto para testar
