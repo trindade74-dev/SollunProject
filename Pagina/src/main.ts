@@ -1,7 +1,6 @@
 // @ts-ignore: Cannot find module './style.css'.
 import "./style.css";
 import { initParallax, initTilt } from "./parallax";
-import { initSolLua } from "./sol-lua";
 
 /* ============================================================
    Sollun — landing page interactions
@@ -298,6 +297,5 @@ ready(() => {
   initWaitlist();
   initParallax();
   initTilt();
-  initSolLua('solLuaCanvas');
   initChatLoop();
 });
