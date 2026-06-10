@@ -147,6 +147,17 @@
         border-color: rgba(217, 117, 67, 0.4);
         transform: translateY(-2px);
       }
+      .cat-card__icon {
+        width: 32px;
+        height: 32px;
+        margin-bottom: 12px;
+        color: var(--ion);
+        transition: color 0.2s, transform 0.2s;
+      }
+      .cat-card:hover .cat-card__icon {
+        color: var(--ember);
+        transform: scale(1.08);
+      }
       .cat-card.is-active {
         border-color: var(--ember);
         background: rgba(217, 117, 67, 0.06);
@@ -354,32 +365,45 @@
           </div>
           <div class="categories-grid">
             <button class="cat-card reveal is-active" data-cat="primeiros-passos" aria-pressed="true">
-              <div class="cat-card__icon">🚀</div>
+              <svg class="cat-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <polyline points="19 12 12 19 5 12"/>
+              </svg>
               <h3>Primeiros Passos</h3>
               <p class="cat-card__count">4 artigos</p>
             </button>
             <button class="cat-card reveal" data-cat="configuracao" aria-pressed="false">
-              <div class="cat-card__icon">⚙️</div>
+              <svg class="cat-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m0 5.08l4.24 4.24M1 12h6m6 0h6m-17.78 0l4.24 4.24m5.08 0l4.24-4.24M12 20v4"/>
+              </svg>
               <h3>Configuração do Bot</h3>
               <p class="cat-card__count">4 artigos</p>
             </button>
             <button class="cat-card reveal" data-cat="integracoes" aria-pressed="false">
-              <div class="cat-card__icon">🔗</div>
+              <svg class="cat-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
               <h3>Integrações</h3>
               <p class="cat-card__count">4 artigos</p>
             </button>
             <button class="cat-card reveal" data-cat="conta-planos" aria-pressed="false">
-              <div class="cat-card__icon">💳</div>
+              <svg class="cat-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><circle cx="9" cy="10" r="1"/><circle cx="12" cy="10" r="1"/><circle cx="15" cy="10" r="1"/>
+              </svg>
               <h3>Conta e Planos</h3>
               <p class="cat-card__count">4 artigos</p>
             </button>
             <button class="cat-card reveal" data-cat="whatsapp" aria-pressed="false">
-              <div class="cat-card__icon">📱</div>
+              <svg class="cat-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
+              </svg>
               <h3>WhatsApp Business</h3>
               <p class="cat-card__count">4 artigos</p>
             </button>
             <button class="cat-card reveal" data-cat="problemas" aria-pressed="false">
-              <div class="cat-card__icon">🔧</div>
+              <svg class="cat-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6.5 1h11l4 4v16a2 2 0 0 1-2 2H4.5a2 2 0 0 1-2-2V5l4-4z"/><path d="M12 10v6"/><circle cx="12" cy="20" r="1"/>
+              </svg>
               <h3>Solução de Problemas</h3>
               <p class="cat-card__count">4 artigos</p>
             </button>
