@@ -249,6 +249,173 @@
       .reset-btn:hover { border-color: var(--ember); color: var(--text); }
       .reset-btn.is-visible { display: block; }
 
+      /* Bubble styles */
+      .bubble {
+        max-width: 75%;
+        padding: 12px 16px;
+        border-radius: 16px;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        opacity: 0;
+        transform: translateY(8px);
+        animation: pop 0.4s forwards;
+      }
+      .bubble--bot {
+        align-self: flex-start;
+        background: var(--bg-elev);
+        border-bottom-left-radius: 4px;
+      }
+      .bubble--user {
+        align-self: flex-end;
+        background: rgba(217, 117, 67, 0.13);
+        border: 1px solid rgba(217, 117, 67, 0.35);
+        border-bottom-right-radius: 4px;
+      }
+      .bubble__timestamp {
+        display: block;
+        font-size: 0.68rem;
+        color: var(--muted);
+        margin-top: 4px;
+        font-family: var(--font-mono);
+      }
+      .bubble--user .bubble__status {
+        display: inline-block;
+        margin-left: 6px;
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+      .bubble--user.is-delivered .bubble__status { color: var(--ion); }
+      .bubble--typing {
+        align-self: flex-start;
+        background: var(--bg-elev);
+      }
+      .bubble--typing span {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        margin: 0 1px;
+        border-radius: 50%;
+        background: var(--muted);
+        animation: blink 1.2s infinite;
+      }
+      .bubble--typing span:nth-child(2) { animation-delay: 0.2s; }
+      .bubble--typing span:nth-child(3) { animation-delay: 0.4s; }
+      @keyframes pop { to { opacity: 1; transform: translateY(0); } }
+      @keyframes blink { 0%, 60%, 100% { opacity: 0.3; } 30% { opacity: 1; } }
+
+      /* Chat progress bar */
+      .chat--demo::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--ion);
+        opacity: 0.4;
+        transform-origin: left;
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+      }
+      .chat--demo {
+        position: relative;
+      }
+      .chat--demo.progress-50::before { transform: scaleX(0.5); }
+      .chat--demo.progress-75::before { transform: scaleX(0.75); }
+      .chat--demo.progress-100::before { transform: scaleX(1); opacity: 0.8; }
+
+      /* Typing indicator label */
+      .typing-label {
+        display: block;
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-bottom: 6px;
+        animation: fadeIn 0.3s forwards;
+      }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+      /* Completion screen */
+      .completion-screen {
+        padding: 24px;
+        background: linear-gradient(135deg, rgba(125,211,216,0.05), rgba(217,117,67,0.05));
+        border: 1px solid rgba(125,211,216,0.2);
+        border-radius: var(--radius);
+        text-align: center;
+        margin: 16px 0;
+        opacity: 0;
+        animation: slideUp 0.4s forwards;
+      }
+      @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+      .completion-screen h3 {
+        font-size: 1rem;
+        margin-bottom: 8px;
+        color: var(--text);
+      }
+      .completion-screen p {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-bottom: 16px;
+      }
+      .completion-screen .btn-group {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+      }
+      .completion-screen .btn-group button {
+        flex: 1;
+        max-width: 200px;
+      }
+      .btn--secondary {
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--text);
+        padding: 12px 24px;
+        border-radius: var(--radius);
+        font-family: var(--font-display);
+        font-weight: 600;
+        cursor: pointer;
+        transition: border-color 0.2s, background 0.2s, color 0.2s;
+      }
+      .btn--secondary:hover {
+        border-color: var(--ember);
+        background: rgba(217, 117, 67, 0.06);
+        color: var(--text);
+      }
+      .btn--primary {
+        background: linear-gradient(135deg, var(--ember), #c55f28);
+        border: none;
+        color: #fdf5ec;
+        padding: 12px 24px;
+        border-radius: var(--radius);
+        font-family: var(--font-display);
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s, opacity 0.2s;
+      }
+      .btn--primary:hover {
+        transform: translateY(-2px);
+      }
+
+      /* Counter animation */
+      .counter {
+        font-family: var(--font-mono);
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--ion);
+      }
+
+      /* Avatar animation on typing */
+      .chat__avatar {
+        animation: none;
+      }
+      .chat__avatar.is-speaking {
+        animation: ring-pulse 1s infinite;
+      }
+      @keyframes ring-pulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(125,211,216,0.7); }
+        50% { box-shadow: 0 0 0 8px rgba(125,211,216,0.1); }
+      }
+
       /* Behind the scenes */
       .behind-grid {
         display: grid;
@@ -271,6 +438,13 @@
       }
       .behind-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
       .behind-card p { color: var(--muted); font-size: 0.95rem; }
+      .behind-card .behind-card__value {
+        font-family: var(--font-mono);
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--ion);
+        margin: 12px 0;
+      }
 
       @media (max-width: 1024px) {
         .demo-layout {

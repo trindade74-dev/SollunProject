@@ -102,22 +102,67 @@ const contextName = document.getElementById("contextName")!;
 const contextTagline = document.getElementById("contextTagline")!;
 
 /* ===== Helpers ===== */
+function formatTime(): string {
+  return new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+}
+
+function updateProgressBar(): void {
+  const chat = document.querySelector(".chat--demo");
+  if (!chat) return;
+  const progress = Math.round((stepIndex / currentScenario.steps.length) * 100);
+  chat.classList.remove("progress-50", "progress-75", "progress-100");
+  if (progress >= 100) chat.classList.add("progress-100");
+  else if (progress >= 75) chat.classList.add("progress-75");
+  else if (progress >= 50) chat.classList.add("progress-50");
+}
+
 function addBubble(text: string, side: "user" | "bot"): void {
+  const msgWrapper = document.createElement("div");
+  msgWrapper.style.display = "flex";
+  msgWrapper.style.flexDirection = "column";
+  msgWrapper.style.gap = "4px";
+
   const bubble = document.createElement("div");
   bubble.className = `bubble bubble--${side}`;
   bubble.style.whiteSpace = "pre-line";
   bubble.textContent = text;
-  demoChat.appendChild(bubble);
+
+  const timestamp = document.createElement("span");
+  timestamp.className = "bubble__timestamp";
+  timestamp.textContent = formatTime();
+
+  msgWrapper.appendChild(bubble);
+  msgWrapper.appendChild(timestamp);
+
+  if (side === "user") {
+    const status = document.createElement("span");
+    status.className = "bubble__status";
+    status.textContent = "✓";
+    bubble.appendChild(status);
+  }
+
+  demoChat.appendChild(msgWrapper);
   demoChat.scrollTop = demoChat.scrollHeight;
+  updateProgressBar();
 }
 
 function showTyping(): HTMLElement {
+  const label = document.createElement("div");
+  label.className = "typing-label";
+  label.textContent = `${currentScenario.botName} está digitando…`;
+
   const el = document.createElement("div");
   el.className = "bubble bubble--typing";
   el.dataset.typing = "true";
   el.innerHTML = "<span></span><span></span><span></span>";
+
+  demoChat.appendChild(label);
   demoChat.appendChild(el);
   demoChat.scrollTop = demoChat.scrollHeight;
+
+  const avatar = document.querySelector(".chat__avatar");
+  if (avatar) avatar.classList.add("is-speaking");
+
   return el;
 }
 
@@ -130,6 +175,35 @@ function setInputsDisabled(disabled: boolean): void {
 function updateQuickReplies(): void {
   quickReplies.innerHTML = "";
   const step = currentScenario.steps[stepIndex];
+
+  if (stepIndex >= currentScenario.steps.length) {
+    const completion = document.createElement("div");
+    completion.className = "completion-screen";
+    completion.innerHTML = `
+      <h3>✅ Conversa concluída</h3>
+      <p>Em apenas ${Math.ceil(currentScenario.steps.length / 2)} trocas, o cliente já tinha tudo que precisava.</p>
+      <div class="btn-group">
+        <button class="btn btn--secondary" id="seeMore">Ver outro cenário</button>
+        <button class="btn btn--primary" id="joinWaitlist">Iniciar na lista</button>
+      </div>
+    `;
+    quickReplies.appendChild(completion);
+
+    document.getElementById("seeMore")?.addEventListener("click", () => {
+      const tabs = document.querySelectorAll<HTMLButtonElement>(".scenario-tab");
+      const currentIdx = Array.from(tabs).findIndex(t => t.dataset.scenario === currentScenario.id);
+      const nextTab = tabs[(currentIdx + 1) % tabs.length];
+      nextTab.click();
+    });
+
+    document.getElementById("joinWaitlist")?.addEventListener("click", () => {
+      const listSection = document.getElementById("lista");
+      if (listSection) listSection.scrollIntoView({ behavior: "smooth" });
+    });
+
+    resetBtn.classList.remove("is-visible");
+    return;
+  }
 
   if (step && step.side === "user") {
     const btn = document.createElement("button");
@@ -150,6 +224,10 @@ function botRespond(text: string, delay = 1100): void {
   const typingEl = showTyping();
   setTimeout(() => {
     typingEl.remove();
+    const label = demoChat.querySelector(".typing-label");
+    if (label) label.remove();
+    const avatar = document.querySelector(".chat__avatar");
+    if (avatar) avatar.classList.remove("is-speaking");
     addBubble(text, "bot");
     isBotTyping = false;
     setInputsDisabled(false);
@@ -184,22 +262,37 @@ function loadScenario(id: string): void {
   currentScenario = scenarios[id];
   stepIndex = 0;
   isBotTyping = false;
-  demoChat.innerHTML = "";
-  quickReplies.innerHTML = "";
-  resetBtn.classList.remove("is-visible");
   setInputsDisabled(false);
 
-  chatBotName.textContent = currentScenario.botName;
-  contextName.textContent = currentScenario.context;
-  contextTagline.textContent = currentScenario.tagline;
-
-  // Show opening bot messages
-  while (stepIndex < currentScenario.steps.length && currentScenario.steps[stepIndex].side === "bot") {
-    addBubble(currentScenario.steps[stepIndex].text, "bot");
-    stepIndex++;
+  const chat = document.querySelector(".chat--demo") as HTMLElement | null;
+  if (chat) {
+    chat.style.opacity = "0";
+    chat.style.transform = "translateY(8px)";
+    chat.style.transition = "opacity 0.2s, transform 0.2s";
   }
 
-  updateQuickReplies();
+  setTimeout(() => {
+    demoChat.innerHTML = "";
+    quickReplies.innerHTML = "";
+    resetBtn.classList.remove("is-visible");
+
+    chatBotName.textContent = currentScenario.botName;
+    contextName.textContent = currentScenario.context;
+    contextTagline.textContent = currentScenario.tagline;
+
+    // Show opening bot messages
+    while (stepIndex < currentScenario.steps.length && currentScenario.steps[stepIndex].side === "bot") {
+      addBubble(currentScenario.steps[stepIndex].text, "bot");
+      stepIndex++;
+    }
+
+    updateQuickReplies();
+
+    if (chat) {
+      chat.style.opacity = "1";
+      chat.style.transform = "translateY(0)";
+    }
+  }, 200);
 }
 
 /* ===== Init ===== */
@@ -236,10 +329,53 @@ ready(() => {
   }
 
   const revealItems = document.querySelectorAll<HTMLElement>(".reveal");
+
+  function animateCounter(card: Element): void {
+    const numEl = card.querySelector(".behind-card__num") as HTMLElement | null;
+    if (!numEl) return;
+
+    const text = numEl.textContent || "";
+    let targetValue = 0;
+    if (text.includes("01")) targetValue = 200;
+    else if (text.includes("02")) targetValue = 97;
+    else if (text.includes("03")) targetValue = 1200;
+
+    if (targetValue === 0) return;
+
+    let current = 0;
+    const duration = 1200;
+    const startTime = performance.now();
+
+    const tick = (now: number): void => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      current = Math.round(progress * targetValue);
+
+      const textContent = numEl?.textContent || "";
+      if (numEl && textContent.includes("01")) {
+        numEl.innerHTML = `01 · Recebe <strong class="counter">&lt; ${current}ms</strong>`;
+      } else if (numEl && textContent.includes("02")) {
+        numEl.innerHTML = `02 · Analisa <strong class="counter">${current}%</strong>`;
+      } else if (numEl && textContent.includes("03")) {
+        numEl.innerHTML = `03 · Responde <strong class="counter">&lt; ${(current / 1000).toFixed(1)}s</strong>`;
+      }
+
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+  }
+
   if ("IntersectionObserver" in window) {
     const io = new IntersectionObserver(
       entries => entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add("is-visible"); io.unobserve(e.target); }
+        if (e.isIntersecting) {
+          e.target.classList.add("is-visible");
+          if (e.target.classList.contains("behind-card")) {
+            animateCounter(e.target);
+          }
+          io.unobserve(e.target);
+        }
       }),
       { threshold: 0.15 }
     );
