@@ -5,6 +5,7 @@
 Se você descobrir uma vulnerabilidade de segurança, **NÃO abra uma issue pública**.
 
 Por favor, email: **trindade7474@gmail.com**
+                  **sollunproject@gmail.com**
 
 Inclua:
 - Descrição da vulnerabilidade
