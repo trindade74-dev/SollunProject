@@ -120,7 +120,7 @@ function initWaitlist(): void {
   const isValidEmail = (value: string): boolean =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const email = input.value.trim();
 
@@ -131,10 +131,31 @@ function initWaitlist(): void {
       return;
     }
 
-    // TODO: integrar com backend / serviço de e-mail (ex.: Supabase, Mailchimp).
-    msg.textContent = "Pronto! Você está na lista. Em breve entramos em contato. 🎉";
-    msg.className = "waitlist__msg is-ok";
-    form.reset();
+    const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (btn) { btn.disabled = true; btn.textContent = "Enviando..."; }
+    msg.textContent = "";
+    msg.className = "waitlist__msg";
+
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json() as { error?: string };
+
+      if (!res.ok) throw new Error(data.error ?? "Erro desconhecido");
+
+      msg.textContent = "Pronto! Você está na lista. Em breve entramos em contato. 🎉";
+      msg.className = "waitlist__msg is-ok";
+      form.reset();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Tente novamente.";
+      msg.textContent = `Ops! ${message}`;
+      msg.className = "waitlist__msg is-error";
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = "Entrar na lista"; }
+    }
   });
 }
 
