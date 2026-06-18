@@ -12,33 +12,40 @@ export function initSolLua(canvasId: string): void {
   const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
   if (!canvas) return;
 
-  const ctx    = canvas.getContext('2d') as CanvasRenderingContext2D;
+  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+  const dpr = Math.min(window.devicePixelRatio || 1, 3);
 
   const isMobile = window.innerWidth < 560;
-  const W: number = isMobile ? 160 : 195;
-  const H: number = isMobile ? 160 : 195;
-  canvas.width  = W;
-  canvas.height = H;
+  const W: number = isMobile ? 130 : 160;
+  const H: number = isMobile ? 130 : 160;
+
+  // Canvas buffer em device pixels, exibição em CSS pixels
+  canvas.width  = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
 
   // ── Desert Protocol palette ─────────────────────────────
 
-  const NIGHT: string = '#0B0A14';
-  const ION:   string = '#7DD3D8';
+  const ION: string = '#7DD3D8';
 
   // ── Scene center ────────────────────────────────────────
 
   const CX: number = W / 2;
   const CY: number = H / 2;
 
-  // ── Logo geometry (rest position) ───────────────────────
+  // ── Logo geometry escalada proporcionalmente (base original: 195px) ──
 
-  const SUN_REST: BodyConfig  = { x: CX - 10, y: CY + 3,  r: 23 };
-  const MOON_REST: BodyConfig = { x: CX + 11, y: CY - 14, r: 17 };
+  const s = W / 195;
 
-  const RING1_R: number = 50;
-  const RING2_R: number = 71;
+  const SUN_REST: BodyConfig  = { x: CX - 10 * s, y: CY + 3 * s,  r: Math.round(23 * s) };
+  const MOON_REST: BodyConfig = { x: CX + 11 * s, y: CY - 14 * s, r: Math.round(17 * s) };
 
-  const SEP: number = 50;
+  const RING1_R: number = Math.round(50 * s);
+  const RING2_R: number = Math.round(71 * s);
+
+  const SEP: number = Math.round(40 * s);
 
   // ── Float parameters ────────────────────────────────────
 
@@ -162,8 +169,6 @@ export function initSolLua(canvasId: string): void {
     const moonY: number = MOON_REST.y + floatY;
 
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = NIGHT;
-    ctx.fillRect(0, 0, W, H);
 
     drawRings(floatY);
     drawSun(sunX,   sunY,  SUN_REST.r);
